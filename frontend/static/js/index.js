@@ -1,36 +1,44 @@
-const url = "https://staging-core.api.drdropin.no/v1/clinics ";
-const clinicName = document.querySelector("#name");
-const clinicOpen = document.querySelector("#open");
-const errorMsg = document.querySelector("#error");
-const container = document.querySelector(".container");
+import { createRequest } from "./getClinics.js";
+import { url } from "./api.js";
 
-const handleErrors = function (response) {
-  if (!response.ok) {
-    throw response.status + ": " + response.statusText;
+const navigateTo = (url) => {
+  history.pushState(null, null, url);
+  router();
+};
+
+const router = async () => {
+  const routes = [
+    { path: "/", view: () => console.log("Viewing Dashboard") },
+    { path: "/clinics", view: () => console.log("Viewing Clinics") },
+  ];
+
+  const potensialMatches = routes.map((route) => {
+    return {
+      route: route,
+      isMatch: location.pathname === route.path,
+    };
+  });
+
+  let match = potensialMatches.find((potensialMatch) => potensialMatch.isMatch);
+
+  // if no match for route found
+  if (!match) {
+    match = {
+      route: routes[0],
+      isMatch: true,
+    };
   }
-  return response.json();
+
+  console.log(match.route.view());
 };
 
-const updateOpeningTimes = function (parsedData) {
-  console.log(parsedData);
-  clinicName.textContent = parsedData[0].name;
-
-  let html = "";
-  // check if clinic is open
-  if (parsedData[0].isOpen) {
-    clinicOpen.textContent = "It's open!";
-  } else {
-    clinicOpen.textContent = "Closed";
-  }
-};
-
-const createRequest = function (url, succeed, fail) {
-  fetch(url)
-    .then((response) => handleErrors(response))
-    .then((data) => {
-      updateOpeningTimes(data);
-    })
-    .catch((error) => fail(error));
-};
-
-createRequest(url);
+document.addEventListener("DOMContentLoaded", () => {
+  document.body.addEventListener("click", (e) => {
+    if (e.target.matches("[data-link]")) {
+      e.preventDefault();
+      navigateTo(e.target.href);
+    }
+  });
+  router();
+  createRequest(url);
+});
