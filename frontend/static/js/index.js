@@ -1,5 +1,23 @@
-import { createRequest } from "./getClinics.js";
-import { url } from "./api.js";
+import Dashboard from "./views/Dashboard.js";
+import Clinics from "./views/Clinics.js";
+import ClinicView from "./views/ClinicView.js";
+import Settings from "./views/Settings.js";
+
+const pathToRegex = (path) =>
+  new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
+
+const getParams = (match) => {
+  const values = match.result.slice(1);
+  const keys = Array.from(match.route.path.matchAll(/:(\w+)/g)).map(
+    (result) => result[1]
+  );
+
+  return Object.fromEntries(
+    keys.map((key, i) => {
+      return [key, values[i]];
+    })
+  );
+};
 
 const navigateTo = (url) => {
   history.pushState(null, null, url);
@@ -8,29 +26,37 @@ const navigateTo = (url) => {
 
 const router = async () => {
   const routes = [
-    { path: "/", view: () => console.log("Viewing Dashboard") },
-    { path: "/clinics", view: () => console.log("Viewing Clinics") },
+    { path: "/", view: Dashboard },
+    { path: "/clinics", view: Clinics },
+    { path: "/clinics/:id", view: ClinicView },
+    { path: "/settings", view: Settings },
   ];
 
-  const potensialMatches = routes.map((route) => {
+  // Test each route for potential match
+  const potentialMatches = routes.map((route) => {
     return {
       route: route,
-      isMatch: location.pathname === route.path,
+      result: location.pathname.match(pathToRegex(route.path)),
     };
   });
 
-  let match = potensialMatches.find((potensialMatch) => potensialMatch.isMatch);
+  let match = potentialMatches.find(
+    (potentialMatch) => potentialMatch.result !== null
+  );
 
-  // if no match for route found
   if (!match) {
     match = {
       route: routes[0],
-      isMatch: true,
+      result: [location.pathname],
     };
   }
 
-  console.log(match.route.view());
+  const view = new match.route.view(getParams(match));
+
+  document.querySelector("#app").innerHTML = await view.getHtml();
 };
+
+window.addEventListener("popstate", router);
 
 document.addEventListener("DOMContentLoaded", () => {
   document.body.addEventListener("click", (e) => {
@@ -39,6 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
       navigateTo(e.target.href);
     }
   });
+
   router();
-  createRequest(url);
 });
