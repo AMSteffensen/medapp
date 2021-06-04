@@ -13,8 +13,11 @@ then
 To start the development environment
 
 Resources:
+Convert MS to Hours
+https://stackoverflow.com/questions/19700283/how-to-convert-time-in-milliseconds-to-hours-min-sec-format-in-javascript
 
 Make fetch better and your API request methods easier to implement
 https://dev.to/stroemdev/make-fetch-better-and-your-api-request-methods-easier-to-implement-e9i
 
+Building a single page app without frameworks
 https://dev.to/dcodeyt/building-a-single-page-app-without-frameworks-hl9

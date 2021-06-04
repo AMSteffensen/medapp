@@ -36,3 +36,12 @@ a {
   color: #009579;
   margin-left: 1em;
 }
+
+li {
+  margin-left: 1em;
+  margin-bottom: 1em;
+}
+
+h2 {
+  margin-left: 1em;
+}
