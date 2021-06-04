@@ -11,9 +11,6 @@ const fetchClinicData = async () => {
       let clinics = data;
       console.log(data);
       return clinics.map(function (clinic) {
-        console.log(clinic.name);
-        console.log(clinic.openingHours);
-
         const div = document.createElement("div");
         const h4 = document.createElement("h4");
         const a = document.createElement("a");
