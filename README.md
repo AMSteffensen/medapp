@@ -1,5 +1,11 @@
 # Open Med App
 
+This is a medical app showing opening hours for medical clinics.
+This was made as a code test for job interview. The app is a experiment to make a single page application without any front end frameworks.
+
+Live Deployment to:
+https://open-med-app.herokuapp.com/
+
 ## Install
 
 First run
